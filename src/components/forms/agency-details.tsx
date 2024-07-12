@@ -48,7 +48,6 @@ import {
 } from "@/lib/queries";
 import { Button } from "../ui/button";
 import Loading from "../global/loading";
-import { log } from "console";
 
 type Props = {
   data?: Partial<Agency>;
