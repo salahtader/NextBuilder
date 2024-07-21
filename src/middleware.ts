@@ -1,36 +1,35 @@
-import { clerkMiddleware, createRouteMatcher ,getAuth } from '@clerk/nextjs/server'
-import type { NextApiRequest, NextApiResponse } from "next";
+import { clerkMiddleware, ClerkMiddlewareAuth, createRouteMatcher } from '@clerk/nextjs/server';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
-const isPublicRoute = createRouteMatcher(['/site', '/api/uploadthing', '/agency/sign-in(.*)', '/agency/sign-up(.*)']);
-export  async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  const { userId } = getAuth(req);
+const isPublicRoute = createRouteMatcher(['/site', '/agency/sign-in','/api/uploadthing']);
 
-  if (!userId) {
-    console.log('page2');
-    
-    return res.status(401).json({ error: "Not authenticated" });
-  }
-
-  // Add logic that retrieves the data for the API route
-
-  return res.status(200).json({ userId: userId });
-}
-
-export default clerkMiddleware((auth, req,res) => {
-  const url = req.nextUrl
+export default clerkMiddleware((auth:ClerkMiddlewareAuth, req:NextRequest) => {
+  const { userId } = auth();
+  const url = req.nextUrl;
+  const searchParams = url.searchParams.toString()
   console.log(url);
   
-  if (!isPublicRoute(req)) {
-    auth().protect();
+  let hostname = req.headers;
+  const pathWithSearchParams = `${url.pathname}${
+    searchParams.length > 0 ? `?${searchParams}` : ''
+  }`
+  if (
+    url.pathname === '/' ||
+    (url.pathname === '/site' && url.host === process.env.NEXT_PUBLIC_DOMAIN)
+  ) {
+    return NextResponse.rewrite(new URL('/site', req.url))
   }
-  else{
-    console.log(req,res);
-    
-  handler(req,res);
+  
+  if (!isPublicRoute(req) && !userId) {
+    // if (url.pathname === '/sign-in' || url.pathname === '/sign-up') {
+    //   return NextResponse.redirect(new URL(`/agency/sign-in`, req.url))
+    // }
+    const signInUrl:URL = new URL('/agency/sign-in', req.url);
+    signInUrl.searchParams.set('redirect_url', req.url);
+    return NextResponse.redirect(signInUrl);
   }
+  return NextResponse.next();
 });
 
 export const config = {

@@ -27,10 +27,7 @@ import { revalidatePath } from 'next/cache'
 //!User configuration
 export const getAuthUserDetails = async () => {
   const user = await currentUser()
-  if (!user) {
-    return
-  }
-
+  if (!user) {  return}
   const userData = await db.user.findUnique({
     where: {
       email: user.emailAddresses[0].emailAddress,
@@ -234,7 +231,7 @@ export const upsertAgency = async (agency: Agency, price?: Plan) => {
 
 export const verifyAndAcceptInvitation = async () => {
   const user = await currentUser()
-  if (!user) return redirect('/sign-in')
+  if (!user) return redirect('agency/sign-in')
   const invitationExists = await db.invitation.findUnique({
     where: {
       email: user.emailAddresses[0].emailAddress,

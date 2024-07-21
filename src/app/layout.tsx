@@ -1,15 +1,9 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "@/providers/theme-provider"
-import {
-  ClerkProvider,
-  // SignInButton,
-  // SignedIn,
-  // SignedOut,
-  // UserButton,
-} from "@clerk/nextjs";
-import {dark} from "@clerk/themes";
 import { DM_Sans } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "@/components/ui/toaster";
+import ModalProvider from "@/providers/modal-provider";
 
 const dmSans = DM_Sans({ subsets: ['latin'], weight: ['400', '500', '700'] });
 
@@ -24,27 +18,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    // <ClerkProvider
-    //   appearance={{baseTheme:dark}}      
-    //   >
+
       <html lang="en" suppressHydrationWarning>
         <body className={dmSans.className}>
-          {/* <SignedOut>
-            <SignInButton />
-          </SignedOut>
-          <SignedIn>
-            <UserButton />
-          </SignedIn> */}
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
+
+       
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <ModalProvider>
             {children}
-          </ThemeProvider>
+            <Toaster />
+            {/* <SonnarToaster position="bottom-left" /> */}
+          </ModalProvider>
+        </ThemeProvider>
         </body>
       </html>
-    // </ClerkProvider>
   );
 }

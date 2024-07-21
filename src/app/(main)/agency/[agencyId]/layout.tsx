@@ -1,12 +1,12 @@
-import BlurPage from '@/components/global/blur-page'
 import InfoBar from '@/components/global/infobar'
-import Sidebar from '@/components/sidebar'
 import Unauthorized from '@/components/unauthorized'
+import BlurPage from '@/components/global/BlurPage'
+import Sidebar from '@/components/sidebar'
 import {
   getNotificationAndUser,
   verifyAndAcceptInvitation,
 } from '@/lib/queries'
-import { currentUser } from '@clerk/nextjs'
+import { currentUser } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import React from 'react'
 
@@ -16,7 +16,7 @@ type Props = {
 }
 
 const layout = async ({ children, params }: Props) => {
-  const agencyId = await verifyAndAcceptInvitation()
+  const agencyId = await verifyAndAcceptInvitation() //Invitayion ->PENDING 
   const user = await currentUser()
 
   if (!user) {
@@ -37,9 +37,7 @@ const layout = async ({ children, params }: Props) => {
   const notifications = await getNotificationAndUser(agencyId)
   if (notifications) allNoti = notifications
 
- 
-
-  return (
+   return (
     <div className="h-screen overflow-hidden">
       <Sidebar
         id={params.agencyId}
@@ -52,7 +50,7 @@ const layout = async ({ children, params }: Props) => {
         />
         <div className="relative">
           <BlurPage>{children}</BlurPage>
-        </div>
+        </div> 
       </div>
     </div>
   )

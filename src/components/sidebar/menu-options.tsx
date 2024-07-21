@@ -40,7 +40,7 @@ type Props = {
   id: string
 }
 
-const MenuOptions : any= ({
+const MenuOptions = ({
   details,
   id,
   sidebarLogo,
@@ -81,7 +81,7 @@ const MenuOptions : any= ({
       </SheetTrigger>
 
       <SheetContent
-        // showX={!defaultOpen}
+        showX={!defaultOpen}
         side={'left'}
         className={clsx(
           'bg-background/80 backdrop-blur-xl fixed top-0 border-r-[1px] p-6',
@@ -237,6 +237,7 @@ const MenuOptions : any= ({
                     <Button
                       className="w-full flex gap-2"
                       onClick={() => {
+// todo: 1. [Button Click] ---> 2. [setOpen(CustomModal)] ---> 3. [ModalProvider] ---> 4. [CustomModal] ---> 5. [Dialog + SubAccountDetails] */
                         setOpen(
                           <CustomModal
                             title="Create A Subaccount"
